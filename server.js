@@ -49,3 +49,40 @@ app.all('/proxy/*', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Proxy server running at http://localhost:${PORT}`);
 });
+
+// const express = require('express');
+// const httpProxy = require('http-proxy-middleware');
+
+// const app = express();
+// const PORT = 3001; // Proxy Server Port
+// const TARGET_SERVER = 'https://ezarapp.com'; // Replace with your main server URL
+
+// // Middleware to log requests
+// app.use((req, res, next) => {
+//     console.log(`Proxying request: ${req.method} ${req.url}`);
+//     next();
+// });
+
+// // Proxy setup
+// const { createProxyMiddleware } = require('http-proxy-middleware');
+
+// app.use(
+//     '/proxy', // Route to proxy (adjust if needed)
+//     createProxyMiddleware({
+//         target: TARGET_SERVER,
+//         changeOrigin: true,
+//         pathRewrite: { '^/proxy': '' }, // Removes "/api" prefix before forwarding
+//         onProxyReq: (proxyReq, req, res) => {
+//             console.log(`Forwarding: ${req.method} ${req.url} -> ${TARGET_SERVER}`);
+//         },
+//         on: {
+//           proxyRes: (pres, req, res) => {
+//             console.log(res);
+//           }
+//         }
+//     })
+// );
+
+// app.listen(PORT, () => {
+//     console.log(`Proxy server running at http://localhost:${PORT}`);
+// });
