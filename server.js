@@ -1,8 +1,9 @@
 // server.js
 
-const express = require('express');
-const cors = require('cors');
-const axios = require('axios');
+const express = require("express");
+const cors = require("cors");
+const axios = require("axios");
+const path = require("path");
 
 const app = express();
 const PORT = 3001; // You can change this if needed
@@ -12,12 +13,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Proxy endpoint
-app.all('/proxy/*', async (req, res) => {
+app.all("/proxy/*", async (req, res) => {
   try {
     // Get target URL after /proxy/
-    const targetUrl = req.originalUrl.replace('/proxy/', 'https://ezarapp.com/');
+    const targetUrl = req.originalUrl.replace(
+      "/proxy/",
+      // "https://ezarapp.com/", // main app
+      "http://surbahapp.com/" // surbah app
+    );
 
-    console.log('targetUrl: ', targetUrl);
+    console.log("targetUrl: ", targetUrl);
 
     // Forward the request to the actual Magento API
     const response = await axios({
@@ -25,22 +30,22 @@ app.all('/proxy/*', async (req, res) => {
       url: targetUrl,
       headers: {
         // ...req.headers,
-        Accept: 'application/json',
-        host: 'ezarapp.com',
+        Accept: "application/json",
+        host: "ezarapp.com",
       },
       data: req.body,
       params: req.query,
     });
 
-    console.log('response: ', response.status);
+    console.log("response: ", response);
 
     res.status(response.status).json(response.data);
   } catch (err) {
-    console.error('Proxy error:', err.message);
+    console.error("Proxy error:", err.message, err);
     if (err.response) {
       res.status(err.response.status).send(err.response.data);
     } else {
-      res.status(500).send('Something went wrong');
+      res.status(500).send("Something went wrong");
     }
   }
 });
