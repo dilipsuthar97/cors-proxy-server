@@ -18,8 +18,8 @@ app.all("/proxy/*", async (req, res) => {
     // Get target URL after /proxy/
     const targetUrl = req.originalUrl.replace(
       "/proxy/",
-      // "https://ezarapp.com/", // main app
-      "http://surbahapp.com/" // surbah app
+      "https://ezarapp.com/", // main app
+      // "http://surbahapp.com/" // surbah app
     );
 
     console.log("targetUrl: ", targetUrl);
