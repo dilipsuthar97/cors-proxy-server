@@ -32,6 +32,7 @@ app.all("/proxy/*", async (req, res) => {
         // ...req.headers,
         Accept: "application/json",
         host: "ezarapp.com",
+        // host: "surbahapp.com",
       },
       data: req.body,
       params: req.query,
@@ -39,7 +40,12 @@ app.all("/proxy/*", async (req, res) => {
 
     console.log("response: ", response);
 
-    res.status(response.status).json(response.data);
+    const headers = Object.entries(response.headers).reduce((acc, header) => {
+      acc[header[0]] = header[1];
+      return acc;
+    }, {})
+
+    res.status(response.status).setHeaders(new Headers(headers)).json(response.data);
   } catch (err) {
     console.error("Proxy error:", err.message, err);
     if (err.response) {
