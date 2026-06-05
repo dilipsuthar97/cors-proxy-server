@@ -16,7 +16,7 @@ const axios = require("axios");
 const targets = {
   ezar: "https://ezarapp.com/",
   surbah: "https://surbahapp.com/",
-  "surbah-staging": "https://staging.surbahapp.com/",
+  "surbah-staging": "http://staging.surbahapp.com/",
 };
 
 const selectedTargetName = process.argv[2] || process.env.PROXY_TARGET || "ezar";
