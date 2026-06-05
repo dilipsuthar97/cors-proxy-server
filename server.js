@@ -3,7 +3,35 @@
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
-const path = require("path");
+// const path = require("path");
+// var admin = require("firebase-admin");
+
+// var serviceAccount = require("./src/serviceAccountKey.json");
+// var notification = require("./src/notification.json");
+
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+// });
+
+const targets = {
+  ezar: "https://ezarapp.com/",
+  surbah: "https://surbahapp.com/",
+  "surbah-staging": "https://staging.surbahapp.com/",
+};
+
+const selectedTargetName = process.argv[2] || process.env.PROXY_TARGET || "ezar";
+const selectedTargetUrl = targets[selectedTargetName];
+
+if (!selectedTargetUrl) {
+  console.error(
+    `Invalid proxy target "${selectedTargetName}". Use one of: ${Object.keys(
+      targets
+    ).join(", ")}`
+  );
+  process.exit(1);
+}
+
+const selectedTargetHost = new URL(selectedTargetUrl).host;
 
 const app = express();
 const PORT = 3001; // You can change this if needed
@@ -16,11 +44,7 @@ app.use(express.urlencoded({ extended: true }));
 app.all("/proxy/*", async (req, res) => {
   try {
     // Get target URL after /proxy/
-    const targetUrl = req.originalUrl.replace(
-      "/proxy/",
-      "https://ezarapp.com/", // main app
-      // "http://surbahapp.com/" // surbah app
-    );
+    const targetUrl = req.originalUrl.replace("/proxy/", selectedTargetUrl);
 
     console.log("targetUrl: ", targetUrl);
 
@@ -31,8 +55,7 @@ app.all("/proxy/*", async (req, res) => {
       headers: {
         // ...req.headers,
         Accept: "application/json",
-        host: "ezarapp.com",
-        // host: "surbahapp.com",
+        host: selectedTargetHost,
       },
       data: req.body,
       params: req.query,
@@ -43,9 +66,12 @@ app.all("/proxy/*", async (req, res) => {
     const headers = Object.entries(response.headers).reduce((acc, header) => {
       acc[header[0]] = header[1];
       return acc;
-    }, {})
+    }, {});
 
-    res.status(response.status).setHeaders(new Headers(headers)).json(response.data);
+    res
+      .status(response.status)
+      .setHeaders(new Headers(headers))
+      .json(response.data);
   } catch (err) {
     console.error("Proxy error:", err.message, err);
     if (err.response) {
@@ -59,6 +85,17 @@ app.all("/proxy/*", async (req, res) => {
 // Start the server
 app.listen(PORT, () => {
   console.log(`🚀 Proxy server running at http://localhost:${PORT}`);
+  console.log(`Proxy target: ${selectedTargetName} (${selectedTargetUrl})`);
+
+  // admin.messaging().send({
+  //   data: notification,
+  //   notification: {
+  //     title: "Representación rechazada",
+  //     body: "Notificacion para: 20-30787042-9",
+  //   },
+  //   token:
+  //     "csUdKDx_RQ2uyFhSPgYOW6:APA91bE_Yz6Xud55lrnPwbwEVUAfW_T8up42uNOu07DPLBFSXFipqvXL7MeVSSS8j_INkMwaInnmVUYRw6eAe-zd1YTaZj9Ka2f6_HJO2vYWFfbt8Islii4",
+  // });
 });
 
 // const express = require('express');

@@ -4,7 +4,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "start:ezar": "node server.js ezar",
+    "start:surbah": "node server.js surbah",
+    "start:surbah:staging": "node server.js surbah-staging"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +17,7 @@
     "axios": "^1.8.4",
     "cors": "^2.8.5",
     "express": "^4.21.2",
+    "firebase-admin": "^13.6.1",
     "http-proxy-middleware": "^3.0.3"
   }
 }
