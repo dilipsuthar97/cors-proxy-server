@@ -85,7 +85,7 @@ app.all("/proxy/*", async (req, res) => {
 // Start the server
 app.listen(PORT, () => {
   console.log(`🚀 Proxy server running at http://localhost:${PORT}`);
-  console.log(`Proxy target: ${selectedTargetName} (${selectedTargetUrl})`);
+  console.log(`Proxy target: ${selectedTargetName} (${selectedTargetHost}) (${selectedTargetUrl})`);
 
   // admin.messaging().send({
   //   data: notification,
