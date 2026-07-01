@@ -58,7 +58,11 @@ app.all("/proxy/*", async (req, res) => {
         host: selectedTargetHost,
       },
       data: req.body,
-      params: req.query,
+      // NOTE: do not pass `params: req.query` here. `targetUrl` already
+      // contains the raw, original query string. Re-parsing via req.query
+      // turns duplicate keys (e.g. `order_by` appears twice in the URL) into
+      // arrays, which axios then serializes as `order_by[]=` — Magento rejects
+      // that with: The "array" value's type is invalid...
     });
 
     console.log("response: ", response);
